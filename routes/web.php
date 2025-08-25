@@ -155,18 +155,11 @@ Route::get('/product/{product}',[ProductController::class , 'show'])->name('prod
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    Route::post('/cart/{product}', [CartController::class, 'store'])->name('cart.store');
-    
-    // This is our NEW route for handling the bulk update
-    Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.update.all');
-
-    // Keep your destroy route, but let's make it consistent
-    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
-
-    // We no longer need the individual PUT update route
-    // Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
+    // Define the static route BEFORE the dynamic one to avoid collisions
+    Route::post('/cart/manage', [CartController::class, 'manageCart'])->name('cart.manage');
+    // Constrain {product} to numeric to ensure "/cart/manage" doesn't match this route
+    Route::post('/cart/{product}', [CartController::class, 'store'])->whereNumber('product')->name('cart.store');
+    // DELETE THE OLD, UNUSED ROUTES
+    // Route::put('/cart/{id}', ...);
+    // Route::delete('/cart/{item}', ...);
 });
-
-//  Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-
- 
