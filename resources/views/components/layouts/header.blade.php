@@ -1,4 +1,3 @@
-<!-- navbar-->
 <header class="header">
   <!-- Tob Bar-->
   <div class="top-bar">
@@ -51,8 +50,8 @@
       <div id="navbarCollapse" class="collapse navbar-collapse">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item dropdown"><a id="navbarHomeLink" href="index.html" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false" class="nav-link {{ Request::is('home*') ? 'active' : '' }}">Home<i
-                class="fa fa-angle-down"></i></a>
+              aria-haspopup="true" aria-expanded="false"
+              class="nav-link {{ Request::is('home*') ? 'active' : '' }}">Home<i class="fa fa-angle-down"></i></a>
             <ul aria-labelledby="navbarDropdownHomeLink" class="dropdown-menu">
               <li><a href="{{route('home')}}" class="dropdown-item">Classic Home</a></li>
               <li><a href="{{route('home2')}}" class="dropdown-item">Parallax sections</a></li>
@@ -60,14 +59,16 @@
             </ul>
           </li>
           {{-- <div class="navbar-nav"> --}}
-            <li class="nav-item"><a href="{{route('category')}}" class="nav-link {{ Request::is('category*') ? 'active' : '' }}">Shop</a>
-          </li>
-          {{-- </div> --}}
+            <li class="nav-item"><a href="{{route('category')}}"
+                class="nav-link {{ Request::is('category*') ? 'active' : '' }}">Shop</a>
+            </li>
+            {{--
+          </div> --}}
 
-          
+
           <!-- Megamenu-->
-          <li class="nav-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link {{ Request::is('home*') ? 'active' : '' }}">Template<i
-                class="fa fa-angle-down"></i></a>
+          <li class="nav-item dropdown menu-large"><a href="#" data-toggle="dropdown"
+              class="nav-link {{ Request::is('home*') ? 'active' : '' }}">Template<i class="fa fa-angle-down"></i></a>
             <div class="dropdown-menu megamenu">
               <div class="row">
                 <div class="col-lg-9">
@@ -201,14 +202,16 @@
               </li>
             </ul>
           </li>
-          <!-- Multi level dropdown end--> 
-          <li class="nav-item"><a href="{{route('blog')}}" class="nav-link {{ Request::is('blog*') ? 'active' : '' }}">Blog </a>
+          <!-- Multi level dropdown end-->
+          <li class="nav-item"><a href="{{route('blog')}}"
+              class="nav-link {{ Request::is('blog*') ? 'active' : '' }}">Blog </a>
           </li>
-          <li class="nav-item"><a href="{{route('contact')}}" class="nav-link {{ Request::is('contact*') ? 'active' : '' }}">Contact</a>
+          <li class="nav-item"><a href="{{route('contact')}}"
+              class="nav-link {{ Request::is('contact*') ? 'active' : '' }}">Contact</a>
           </li>
         </ul>
         @auth
-        <div class="text-muted text-small">Welcome , {{Auth::user()->name}}</div>
+          <div class="text-muted text-small">Welcome , {{Auth::user()->name}}</div>
         @endauth
         <div class="right-col d-flex align-items-lg-center flex-column flex-lg-row">
           <!-- Search Button-- class="icon-search" -->
@@ -233,9 +236,9 @@
               </li>
               <li class="dropdown-divider"></li>
               {{-- @guest
-           
-          <a href="{{ route('user_login') }}">Login</a>
-        @endguest --}}
+
+              <a href="{{ route('user_login') }}">Login</a>
+              @endguest --}}
               <li class="dropdown-item"><a href="{{route("logout")}}">Logout </a></li>
             </ul>
           </div>
@@ -254,15 +257,16 @@
                 <div class="d-flex align-items-center">
                   <div class="img"><img src="{{ asset('img/hoodie-man-1.png') }}" alt="..." class="img-fluid"></div>
                   <div class="details d-flex justify-content-between">
-                    <div class="text"> <a href="#"><strong>Heather Gray Hoodie</strong></a><small>Quantity: 1
-                      </small><span class="price">$75.00 </span></div><a href="#" class="delete"><i
+                    <div class="text"> <a href="#"><strong>Collections</strong></a><small>Quantity:1
+                      </small><span class="price"> </span></div><a href="#" class="delete"><i
                         class="fa fa-trash-o"></i></a>
                   </div>
                 </div>
               </div>
               <!-- total price-->
+
               <div class="dropdown-item total-price d-flex justify-content-between"><span>Total</span><strong
-                  class="text-primary">$75.00</strong></div>
+                  class="text-primary">$1209.00</strong></div>
               <!-- call to actions-->
               <div class="dropdown-item CTA d-flex"><a href="{{route('cart')}}" class="btn btn-template wide">View
                   Cart</a><a href="{{route("checkout_address")}}" class="btn btn-template wide">Checkout</a></div>
@@ -272,13 +276,13 @@
       </div>
     </div>
   </nav>
-</header>
+  </header>
 
-<script>
-$(document).ready(function () {
+  <script>
+    $(document).ready(function () {
       $('.navbar-nav .nav-link').on('click', function () {
         $('.navbar-nav').find('.active').removeClass('active');
         $(this).addClass('active');
       });
     });
-    </script>
+  </script>

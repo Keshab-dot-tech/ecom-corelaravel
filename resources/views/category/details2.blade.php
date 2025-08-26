@@ -18,6 +18,15 @@
         </div>
     </section>
 
+    {{-- @php
+    echo Auth::user();
+    echo session('cart');
+    if (session()->has('cart')) {
+    echo session('cart');
+    echo Auth::user();
+    }
+    @endphp --}}
+
     <!-- Product Details -->
     <section class="product-details">
         <div class="container">
@@ -90,7 +99,7 @@
                         </div>
                         <select id="product-size" class="bs-select">
                             @foreach($product->sizes as $size)
-                                <option value="{{ $size->id }}">{{ $size->size }}</option>
+                            <option value="{{ $size->id }}">{{ $size->size }}</option>
                             @endforeach
                         </select>
                     </div> --}}
@@ -107,24 +116,24 @@
                             <form action="{{ route('cart.store', $product->id) }}" method="POST" id="add-to-cart-form">
                                 @csrf
 
-                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
-        <div class="quantity d-flex align-items-center">
-            <div class="dec-btn">-</div>
-            <!-- Add name="quantity" so it submits -->
-            <input type="text" name="quantity" value="1" class="quantity-no">
-            <div class="inc-btn">+</div>
-        </div>
-        <select id="product-size" class="bs-select">
-            @foreach($product->sizes as $size)
-                <option value="{{ $size->id }}">{{ $size->size }}</option>
-            @endforeach
-        </select>
-    </div>
+                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start mb-2">
+                                    <div class="quantity d-flex align-items-center">
+                                        <div class="dec-btn">-</div>
+
+                                        <input type="text" name="quantity" value="1" class="quantity-no">
+                                        <div class="inc-btn">+</div>
+                                    </div>
+                                    <select id="product-size" class="bs-select">
+                                        @foreach($product->sizes as $size)
+                                            <option value="{{ $size->id }}">{{ $size->size }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
 
 
 
-                                {{-- <input type="hidden" name="quantity" value="1"> --}}
+
                                 <button type="submit" class="btn btn-template wide">
                                     <i class="icon-cart"></i> Add to Cart
                                 </button>
@@ -137,7 +146,7 @@
                         </li>
                     </ul>
 
-                    <div class="dropdown-item CTA d-flex"><a href="{{route('cart')}}" class="btn btn-template wide">View
+                    <div class="dropdown-item CTA d-flex justify-content-center"><a href="{{route('cart')}}" class="btn btn-template wide">View
                             Cart</a></div>
                 </div>
             </div>

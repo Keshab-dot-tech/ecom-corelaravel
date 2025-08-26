@@ -1,7 +1,7 @@
 <div class="customer-sidebar col-xl-3 col-lg-4 mb-md-5">
                     <div class="customer-profile"><a href="#" class="d-inline-block"><img src="img/person-3.jpg"
                                 class="img-fluid rounded-circle customer-image"></a>
-                        <h5>Julie Machallova</h5>
+                        <h5>{{Auth()->user()->name}}</h5>
                         <p class="text-muted text-small">Ostrava, Czech republic</p>
                     </div>
                     <nav class="list-group customer-nav"><a href="customer-orders.html"

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ReisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\UpdateUser;
+use App\Http\Controllers\OrderController;
 
 Route::get('/welcome', function () {
     return view('dashboard.welcome');
@@ -92,23 +93,37 @@ Route::middleware('auth')->group(function () {
 
 
     //protected routes for checkouts
-    Route::get('checkout/address',[CheckoutController::class, 'index_checkout1'])->name('checkout_address');
+    Route::get('checkout/address', [CheckoutController::class, 'index_checkout1'])->name('checkout_address');
 
-    Route::get('checkout/delivery',[CheckoutController::class, 'index_checkout2'])->name('checkout_delivery');
+    Route::get('checkout/delivery', [CheckoutController::class, 'index_checkout2'])->name('checkout_delivery');
 
-    Route::get('checkout/payment',[CheckoutController::class, 'index_checkout3'])->name("checkout_payment");
+    Route::get('checkout/payment', [CheckoutController::class, 'index_checkout3'])->name("checkout_payment");
 
-    Route::get('checkout/order-review',[CheckoutController::class, 'index_checkout4'])->name("checkout_order_review");
+    Route::get('checkout/order-review', [CheckoutController::class, 'index_checkout4'])->name("checkout_order_review");
 
-    Route::get('checkout/order-confirmed',function(){
+    Route::get('checkout/order-confirmed', function () {
         return view("checkout.checkout5");
     })->name("checkout_order_confirm");
 
+    // Route::post('checkout/order-review' , [CheckoutController::class,'destroy'])->name('checkout_item_destroy');
 
-    
+    Route::delete('checkout/order-review/{id}', [CheckoutController::class, 'destroy'])
+        ->name('checkout_item_destroy');
 
 
-    
+    Route::get('customer-order', [OrderController::class, 'order_detail'])->name('order_detail');
+
+    Route::get('customer/all-orders' , [OrderController::class , 'all_orders']) ->name('all_orders');
+
+
+    Route::post('/save-address', [CheckoutController::class, 'save_address'])->name('save_address');
+
+    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])
+        ->name('checkout_place_order');
+
+
+    // Route::get('/checkout/delivery', [CheckoutController::class, 'delivery'])
+    //     ->name('checkout_delivery');
 });
 
 
@@ -129,37 +144,23 @@ Route::get('about_us', function () {
 })->name('about_us');
 
 Route::get('/', function () {
-        return view('dashboard.home');
-    })->name('home');
+    return view('dashboard.home');
+})->name('home');
 
 
-Route::get('/product/{product}',[ProductController::class , 'show'])->name('products.show');
+Route::get('/product/{product}', [ProductController::class, 'show'])->name('products.show');
 
 
- 
 
 
- 
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/cart', [CartController::class, 'index'])->name('cart');
-//     Route::post('/cart/{product}', [CartController::class, 'store'])->name('cart.store');
-//     // Route::post('/cart/update',[CartController::class,'update_cart'])->name('cartUpdate');
-//      Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-//     // Route::post('/cart', [CartController::class, 'update'])->name('cart.update');
-//     Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.destroy'); 
-//     // Route::post('/cart/update/{id}', [CartController::class, 'update_cart'])->name('cart.update');
-   
 
-// });
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    // Define the static route BEFORE the dynamic one to avoid collisions
+
     Route::post('/cart/manage', [CartController::class, 'manageCart'])->name('cart.manage');
-    // Constrain {product} to numeric to ensure "/cart/manage" doesn't match this route
+
     Route::post('/cart/{product}', [CartController::class, 'store'])->whereNumber('product')->name('cart.store');
-    // DELETE THE OLD, UNUSED ROUTES
-    // Route::put('/cart/{id}', ...);
-    // Route::delete('/cart/{item}', ...);
 });

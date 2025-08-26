@@ -10,9 +10,9 @@ class Cart extends Model
 {
     protected $fillable = ['user_id',
         'product_id',
-        'quantity', // <-- MAKE SURE THIS IS HERE!
+        'quantity',  
         'price',
-        'session_id', // Add any other fields you have
+        'session_id',  
         ];
 
     public function user()

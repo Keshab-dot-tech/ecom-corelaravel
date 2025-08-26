@@ -1,5 +1,5 @@
 <x-layouts.app>
-   <x-hero-section/>
+    <x-hero-section />
     <!-- Checkout Forms-->
     <section class="checkout">
         <div class="container">
@@ -14,17 +14,20 @@
                     </ul>
                     <div class="tab-content">
                         <div id="address" class="active tab-block">
-                            <form action="#">
+                            <form action="{{route("save_address")}}" method="POST" class="address_form" id="myForm">
+                                
+
+                                @csrf
                                 <!-- Invoice Address-->
                                 <div class="block-header mb-5">
                                     <h6>Invoice address </h6>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                    <label for="name" class="form-label">Name</label>
-                                     
-                                    <input id="name" name="name" type="text" class="form-control"
-                                        value="{{ old('name', Auth::user()->name) }}">
+                                        <label for="name" class="form-label">Name</label>
+
+                                        <input id="name" name="name" type="text" class="form-control"
+                                            value="{{ old('name', Auth::user()->name) }}">
                                     </div>
                                     {{-- <div class="form-group col-md-6">
                                         <label for="lastname" class="form-label">Last Name</label>
@@ -40,44 +43,39 @@
                                     <div class="form-group col-md-6">
                                         <label for="street" class="form-label">Street</label>
                                         <input id="street" type="text" name="address" placeholder="Your street name"
-                                            class="form-control"
-                                            value="{{old('company',Auth::user()->street)}}">
+                                            class="form-control" value="{{old('company', Auth::user()->street)}}">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="city" class="form-label">City</label>
                                         <input id="city" type="text" name="city" placeholder="Your city"
-                                            class="form-control"
-                                            value="{{old('company',Auth::user()->street)}}">
+                                            class="form-control" value="{{old('company', Auth::user()->street)}}">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="zip" class="form-label">ZIP</label>
                                         <input id="zip" type="text" name="zip_code" placeholder="ZIP code"
-                                            class="form-control"
-                                            value="{{old('zip_code',Auth::user()->zip_code)}}">
+                                            class="form-control" value="{{old('zip_code', Auth::user()->zip_code)}}">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="state" class="form-label">State</label>
                                         <input id="state" type="text" name="state_name" placeholder="Your state"
                                             class="form-control"
-                                            value="{{old('state_name',Auth::user()->state_name)}}">
+                                            value="{{old('state_name', Auth::user()->state_name)}}">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="country" class="form-label">Country</label>
-                                        <input id="country" type="text" name="country" placeholder="Your country"
+                                        <input id="country" type="text" name="country_name" placeholder="Your country"
                                             class="form-control"
-                                            value="{{old('country_name',Auth::user()->country_name)}}">
+                                            value="{{old('country_name', Auth::user()->country_name)}}">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="phone-number" class="form-label">Phone Number</label>
-                                        <input id="phone-number" type="tel" name="phone-number"
-                                            placeholder="Your phone number" class="form-control"
-                                            value="{{old('phone',Auth::user()->phone)}}">
+                                        <input id="phone-number" type="tel" name="phone" placeholder="Your phone number"
+                                            class="form-control" value="{{old('phone', Auth::user()->phone)}}">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="company" class="form-label">Company</label>
                                         <input id="company" type="text" name="company" placeholder="Your company name"
-                                            class="form-control"
-                                            value="{{old('company',Auth::user()->company)}}">
+                                            class="form-control" value="{{old('company', Auth::user()->company)}}">
                                     </div>
                                     <div class="form-group col-12 mt-3 ml-3">
                                         <input id="another-address" type="checkbox" class="checkbox-template">
@@ -95,12 +93,12 @@
                                     <div class="row">
                                         <div class="form-group col-md-6">
                                             <label for="shipping_firstname" class="form-label">First Name</label>
-                                            <input id="shipping_firstname" type="text" name="shipping_first-name"
+                                            <input id="shipping_firstname" type="text" name="shipping_first_name"
                                                 placeholder="Enter you first name" class="form-control">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="shipping_lastname" class="form-label">Last Name</label>
-                                            <input id="lshipping_astname" type="text" name="shipping_last-name"
+                                            <input id="lshipping_astname" type="text" name="shipping_last_name"
                                                 placeholder="Enter your last name" class="form-control">
                                         </div>
                                         <div class="form-group col-md-6">
@@ -135,7 +133,7 @@
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="shipping_phone-number" class="form-label">Phone Number</label>
-                                            <input id="shipping_phone-number" type="tel" name="shipping_phone-number"
+                                            <input id="shipping_phone-number" type="tel" name="shipping_phone_number"
                                                 placeholder="Your phone number" class="form-control">
                                         </div>
                                         <div class="form-group col-md-6">
@@ -148,17 +146,51 @@
                                 <!-- /Shipping Address-->
                                 <div class="CTAs d-flex justify-content-between flex-column flex-lg-row"><a
                                         href="{{route("cart")}}" class="btn btn-template-outlined wide prev"> <i
-                                            class="fa fa-angle-left"></i>Back to basket</a><a
-                                        href="{{route("checkout_delivery")}}" class="btn btn-template wide next">Choose
-                                        delivery method<i class="fa fa-angle-right"></i></a></div>
+                                            class="fa fa-angle-left"></i>Back to basket</a>
+                                    {{-- <a href="{{route(" checkout_delivery")}}"
+                                        class="submit_btn btn btn-template wide next">Choose
+                                        delivery method<i class="fa fa-angle-right"></i></a> --}}
+                                    <button type="submit" class="btn btn-template wide next">
+                                        Choose delivery method <i class="fa fa-angle-right"></i>
+                                    </button>
+                                    {{-- <a href="{{ route('checkout_delivery') }}"
+                                        onclick="event.preventDefault(); document.getElementById('myForm').action='{{ route('checkout_delivery') }}'; document.getElementById('myForm').submit();"
+                                        class="btn btn-template wide next">
+                                        Choose delivery method <i class="fa fa-angle-right"></i>
+                                    </a> --}}
+
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
                             </form>
                         </div>
                     </div>
                 </div>
-                 
-                <x-order-summary :cartItems="$cartItems"/>
+                <x-order-summary :cartItems="$cartItems" />
             </div>
         </div>
     </section>
 
 </x-layouts.app>
+{{-- 
+<script>
+    const btn = document.querySelector(.submit_btn);
+    const form = document.getElementById("myForm");
+
+    btn.addEventListener('click', function () {
+        console.log("The form has been submitted!");
+        form.submit();
+    });
+
+
+</script> --}}

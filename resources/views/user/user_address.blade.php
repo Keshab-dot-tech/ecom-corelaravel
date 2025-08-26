@@ -38,7 +38,7 @@
 
 
                     <nav class="list-group customer-nav">
-                        <a href="#"
+                        <a href="{{route("all_orders")}}"
                             class="list-group-item d-flex justify-content-between align-items-center"><span><span
                                     class="icon icon-bag"></span>Orders</span><small
                                 class="badge badge-pill badge-primary">5</small></a>

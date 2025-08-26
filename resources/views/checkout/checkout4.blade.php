@@ -30,62 +30,82 @@
                                         </div>
                                     </div>
                                     <div class="basket-body">
-                        
-                        @foreach($cartItems as $item)
-                        <div class="item">
-                            <div class="row d-flex align-items-center">
-                                                           
 
-                                <div class="col-5">
-                                    <div class="d-flex align-items-center"><img src={{asset("img/" . $item->product->image_path)}} alt="..."
-                                            class="img-fluid">
-                                        <div class="title"><a href="{{route("products.show" , '$item')}}">
-                                                <h5>Loose Oversised Shirt</h5><span class="text-muted">Size:
-                                                    Large</span>
-                                            </a></div>
+                                        @foreach($cartItems as $item)
+                                            <div class="item">
+                                                <div class="row d-flex align-items-center">
+
+
+                                                    <div class="col-5">
+                                                        <div class="d-flex align-items-center"><img src={{asset("img/" . $item->product->image_path)}} alt="..." class="img-fluid">
+                                                            <div class="title"><a
+                                                                    href="{{route("products.show", '$item')}}">
+                                                                    <h5>Loose Oversised Shirt</h5><span
+                                                                        class="text-muted">Size:
+                                                                        Large</span>
+                                                                </a></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2"><span>{{ $item->product->name }}</span></div>
+                                                    <form action="" method="post" class="update_form">
+                                                        <div class="col-2">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="quantity d-flex align-items-center">
+                                                                    <div class="dec-btn">-</div>
+                                                                    <input type="text" value="{{ $item->quantity }}"
+                                                                        class="quantity-no">
+                                                                    <div class="inc-btn">+</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <div class="col-2"><span>${{ $item->price * $item->quantity }}</span>
+                                                    </div>
+
+
+                                                    <form action="{{ route('checkout_item_destroy', $item->id) }}"
+                                                        method="POST">
+                                                        @csrf @method('DELETE')
+                                                        <button class="btn btn-primary border-0" name="delete_item"
+                                                            title="Remove item"><i class="delete fa fa-trash"></i></button>
+                                                    </form>
+
+                                                    {{-- <button type="submit" name="delete_item" value="{{ $item->id }}"
+                                                        class="btn btn-danger btn-sm" title="Remove item">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button> --}}
+
+
+
+                                                </div>
+                                            </div>
+                                        @endforeach
+
                                     </div>
-                                </div>
-                                <div class="col-2"><span>{{ $item->product->name }}</span></div>
-                                <form action="" method="post" class="update_form">
-                                <div class="col-2">
-                                    <div class="d-flex align-items-center">
-                                        <div class="quantity d-flex align-items-center">
-                                            <div class="dec-btn">-</div>
-                                            <input type="text" value="{{ $item->quantity }}" class="quantity-no">
-                                            <div class="inc-btn">+</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                </form>
-                                <div class="col-2"><span>${{ $item->price * $item->quantity }}</span></div>
-
-
-                                <form action="{{ route('cart.destroy', $item->id) }}" method="POST">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-primary border-0"><i class="delete fa fa-trash"></i></button>
-                                </form>
-
-
-                                
-                            </div>
-                        </div>
-                        @endforeach
-                         
-                    </div>
                                 </div>
                                 <div class="total row"><span class="col-md-10 col-2">Total</span><span
-                                        class="col-md-2 col-10 text-primary">${{ $cartItems->sum(fn($i) => $i->price * $i->quantity)}}</span></div>
+                                        class="col-md-2 col-10 text-primary">${{ $cartItems->sum(fn($i) => $i->price * $i->quantity)}}</span>
+                                </div>
                             </div>
                             <div class="CTAs d-flex justify-content-between flex-column flex-lg-row"><a
                                     href="{{route("checkout_payment")}}" class="btn btn-template-outlined wide prev"><i
-                                        class="fa fa-angle-left"></i>Back to payment method</a><a
-                                    href="{{route("checkout_order_confirm")}}" class="btn btn-template wide next">Place
-                                    an order<i class="fa fa-angle-right"></i></a>
+                                        class="fa fa-angle-left"></i>Back to payment method</a>
+                                {{-- <a href="{{route(" checkout_order_confirm")}}"
+                                    class="btn btn-template wide next">Place
+                                    an order<i class="fa fa-angle-right"></i></a> --}}
+                                <form action="{{ route('checkout_place_order') }}" method="POST">
+                                    @csrf
+
+
+                                    <button type="submit" class="btn btn-success">
+                                        Place Order
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-               <x-order-summary :cartItems='$cartItems'/>
+                <x-order-summary :cartItems='$cartItems' />
             </div>
         </div>
     </section>
