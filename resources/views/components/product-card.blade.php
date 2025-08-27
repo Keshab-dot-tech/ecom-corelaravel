@@ -9,7 +9,13 @@
             
             <div class="hover-overlay d-flex align-items-center justify-content-center">
                 <div class="CTA d-flex align-items-center justify-content-center">
-                    <a href="#" class="add-to-cart"><i class="fa fa-shopping-cart"></i></a>
+                    <form action="{{ route('cart.store', $product) }}" method="POST" style="display: inline;">
+                        @csrf
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="add-to-cart" style="background: none; border: none; color: inherit; cursor: pointer;">
+                            <i class="fa fa-shopping-cart"></i>
+                        </button>
+                    </form>
                     <a href="{{ route('products.show', $product) }}" class="visit-product active"><i class="icon-search"></i>View</a>
                     <a href="#" data-toggle="modal" data-target="#exampleModal" class="quick-view"><i class="fa fa-arrows-alt"></i></a>
                 </div>

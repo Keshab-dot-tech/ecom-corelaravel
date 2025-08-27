@@ -48,7 +48,7 @@
             <div class="d-flex align-items-center">
               <div class="quantity d-flex align-items-center">
                 <div class="dec-btn">-</div>
-                <input type="text" value="1" class="quantity-no">
+                <input type="text" value="1" class="quantity-no" name="quantity" id="quantity">
                 <div class="inc-btn">+</div>
               </div>
               <select id="size" class="bs-select">
@@ -61,9 +61,13 @@
             </div>
             <ul class="CTAs list-inline">
               <li class="list-inline-item">
-                <a href="#" class="btn btn-template wide">
-                  <i class="fa fa-shopping-cart"></i>Add to Cart
-                </a>
+                <form action="{{ route('cart.store', $product) }}" method="POST" style="display: inline;">
+                  @csrf
+                  <input type="hidden" name="quantity" value="1" id="quantity-hidden">
+                  <button type="submit" class="btn btn-template wide">
+                    <i class="fa fa-shopping-cart"></i>Add to Cart
+                  </button>
+                </form>
               </li>
               <li class="list-inline-item">
                 <a href="#" class="visit-product active btn btn-template-outlined wide">
@@ -97,4 +101,40 @@
       </div>
     </div>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const quantityInput = document.getElementById('quantity');
+      const quantityHidden = document.getElementById('quantity-hidden');
+      const decBtn = document.querySelector('.dec-btn');
+      const incBtn = document.querySelector('.inc-btn');
+
+      // Sync quantity input with hidden field
+      function updateQuantity() {
+        quantityHidden.value = quantityInput.value;
+      }
+
+      // Initial sync
+      updateQuantity();
+
+      // Update on input change
+      quantityInput.addEventListener('input', updateQuantity);
+
+      // Decrement button
+      decBtn.addEventListener('click', function() {
+        let currentQty = parseInt(quantityInput.value);
+        if (currentQty > 1) {
+          quantityInput.value = currentQty - 1;
+          updateQuantity();
+        }
+      });
+
+      // Increment button
+      incBtn.addEventListener('click', function() {
+        let currentQty = parseInt(quantityInput.value);
+        quantityInput.value = currentQty + 1;
+        updateQuantity();
+      });
+    });
+  </script>
 </x-layouts.app>

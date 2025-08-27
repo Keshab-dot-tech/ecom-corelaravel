@@ -12,32 +12,40 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::with('product')
-            ->where('user_id', auth()->id())
-            ->get();
+        if (Auth::check()) {
+            // User is logged in - get cart from database
+            $cartItems = Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->get();
+        } else {
+            // User is guest - get cart from session
+            $sessionCart = Session::get('cart', []);
+            $cartItems = collect($sessionCart)->map(function ($item) {
+                // Create a mock object structure for session cart items
+                $mockItem = new \stdClass();
+                $mockItem->id = $item['product_id']; // Use product_id as temporary id
+                $mockItem->quantity = $item['quantity'];
+                $mockItem->price = $item['price'];
+                
+                // Create mock product object
+                $mockProduct = new \stdClass();
+                $mockProduct->id = $item['product_id'];
+                $mockProduct->name = $item['name'];
+                $mockProduct->image_path = $item['image_path'] ?? 'default.jpg';
+                
+                $mockItem->product = $mockProduct;
+                return $mockItem;
+            });
+        }
+        
         return view('user.cart', compact('cartItems'));
     }
 
     public function store(Request $request, Product $product)
     {
-        // $cartItem = Cart::where('user_id', auth()->id())
-        //     ->where('product_id', $product->id)
-        //     ->first();
-
-        // if ($cartItem) {
-        //     $cartItem->increment('quantity', $request->input('quantity', 1));
-        // } else {
-        //     Cart::create([
-        //         'user_id'    => auth()->id(),
-        //         'product_id' => $product->id,
-        //         'quantity'   => $request->input('quantity', 1),
-        //         'price'      => $product->price,
-        //     ]);
-        // }
-
-
         if (Auth::check()) {
-            $cartItem = Cart::where('user_id', auth()->id())
+            // User is logged in - store in database
+            $cartItem = Cart::where('user_id', Auth::id())
                 ->where('product_id', $product->id)
                 ->first();
 
@@ -45,82 +53,88 @@ class CartController extends Controller
                 $cartItem->increment('quantity', $request->input('quantity', 1));
             } else {
                 Cart::create([
-                    'user_id'    => auth()->id(),
+                    'user_id'    => Auth::id(),
                     'product_id' => $product->id,
                     'quantity'   => $request->input('quantity', 1),
                     'price'      => $product->price,
-                    'session_id' => session()->getId()
+                    'session_id' => Session::getId()
                 ]);
             }
-        }
-        else{
-
-            $cart = $request->session()->get('cart' , []);
-            $productId = $product->id();
-            if(isset($cart[$productId])){
-                $cart[$productId]['quantity'] += $request->input('quantity', 1);
-            }
-            else{
-                $cart[$productId] = [
-                'product_id' => $product->id,
-                'name'       => $product->name,
-                'price'      => $product->price,
-                'quantity'   => $request->input('quantity', 1),
-            ];
-            }
-
-            $request->session()->put('cart' , $cart);
+        } else {
+            // User is guest - store in session
+            $cart = Session::get('cart', []);
+            $productId = $product->id;
             
-            // $session_id = Session::getId();
-            // $carts = Cart::where('session_id' , $session_id)->get();
+            if (isset($cart[$productId])) {
+                $cart[$productId]['quantity'] += $request->input('quantity', 1);
+            } else {
+                $cart[$productId] = [
+                    'product_id' => $product->id,
+                    'name'       => $product->name,
+                    'price'      => $product->price,
+                    'quantity'   => $request->input('quantity', 1),
+                    'image_path' => $product->image_path ?? 'default.jpg',
+                ];
+            }
 
-            // if($carts){
-            //     $carts->increment('quantity',$request->input('quantity',1));
-            // }
-            // else{
-            //     Cart::create([
-            //         'user_id' => $session_id,
-            //         'product_id' => $product->id,
-            //         'quantity'   => $request->input('quantity', 1),
-            //         'price'      => $product->price,
-            //         'session_id' => $session_id,
-            //     ]);
-            // }
+            Session::put('cart', $cart);
         }
 
         return redirect()->back()->with('success', 'Item added to cart successfully!');
     }
 
-
     public function manageCart(Request $request)
     {
-
-        if ($request->has('delete_item')) {
-            $cartIdToDelete = $request->input('delete_item');
-
-            Cart::where('id', $cartIdToDelete)
-                ->where('user_id', auth()->id())
-                ->delete();
-
-            return redirect()->route('cart')->with('success', 'Item removed!');
-        }
-
-
-        if ($request->has('update_cart')) {
-            $request->validate([
-                'quantities'   => 'required|array',
-                'quantities.*' => 'required|integer|min:1'
-            ]);
-
-            foreach ($request->input('quantities') as $cartId => $quantity) {
-                Cart::where('id', $cartId)
-                    ->where('user_id', auth()->id())
-                    ->update(['quantity' => $quantity]);
+        if (Auth::check()) {
+            // User is logged in - manage database cart
+            if ($request->has('delete_item')) {
+                $cartIdToDelete = $request->input('delete_item');
+                Cart::where('id', $cartIdToDelete)
+                    ->where('user_id', Auth::id())
+                    ->delete();
+                return redirect()->route('cart')->with('success', 'Item removed!');
             }
-            return redirect()->route('cart')->with('success', 'Cart updated successfully!');
+
+            if ($request->has('update_cart')) {
+                $request->validate([
+                    'quantities'   => 'required|array',
+                    'quantities.*' => 'required|integer|min:1'
+                ]);
+
+                foreach ($request->input('quantities') as $cartId => $quantity) {
+                    Cart::where('id', $cartId)
+                        ->where('user_id', Auth::id())
+                        ->update(['quantity' => $quantity]);
+                }
+                return redirect()->route('cart')->with('success', 'Cart updated successfully!');
+            }
+        } else {
+            // User is guest - manage session cart
+            if ($request->has('delete_item')) {
+                $productIdToDelete = $request->input('delete_item');
+                $cart = Session::get('cart', []);
+                unset($cart[$productIdToDelete]);
+                Session::put('cart', $cart);
+                return redirect()->route('cart')->with('success', 'Item removed!');
+            }
+
+            if ($request->has('update_cart')) {
+                $request->validate([
+                    'quantities'   => 'required|array',
+                    'quantities.*' => 'required|integer|min:1'
+                ]);
+
+                $cart = Session::get('cart', []);
+                foreach ($request->input('quantities') as $productId => $quantity) {
+                    if (isset($cart[$productId])) {
+                        $cart[$productId]['quantity'] = $quantity;
+                    }
+                }
+                Session::put('cart', $cart);
+                return redirect()->route('cart')->with('success', 'Cart updated successfully!');
+            }
         }
 
-        // If neither button was clicked, just return to the cart
         return redirect()->route('cart');
     }
 }

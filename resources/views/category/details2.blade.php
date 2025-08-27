@@ -38,29 +38,24 @@
                     @endif
 
                     <div data-slider-id="1" class="owl-carousel items-slider owl-drag">
-                        {{-- @forelse($product->image_path as $image)
+                        {{-- DYNAMIC IMAGE SLIDER - UNCOMMENT WHEN YOU HAVE MULTIPLE PRODUCT IMAGES --}}
+                        {{-- @forelse($product->images as $image)
                         <div class="item">
-                            <img src="{{ asset('img/' . $image) }}" alt="{{ $product->name }}">
+                            <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $product->name }}" class="img-fluid">
                         </div>
-                        @endforeach --}}
-                        {{-- @empty --}}
-                        {{-- @if($product->images->count())
-                        @foreach($product->image_path as $image)
+                        @empty --}}
+                        
+                        {{-- SINGLE PRODUCT IMAGE - CURRENTLY USING PRODUCT'S IMAGE_PATH --}}
                         <div class="item">
-
-                            <img src="{{ asset(" img/hoodie-woman-2.png") }}" alt="{{ $product->name }}"
-                                class="img-fluid">
+                            @if($product->image_path)
+                                <img src="{{ asset('img/' . $product->image_path) }}" alt="{{ $product->name }}" class="img-fluid">
+                            @else
+                                {{-- FALLBACK IMAGE - UNCOMMENT AND REPLACE WITH YOUR DEFAULT IMAGE --}}
+                                {{-- <img src="{{ asset('img/no-image.png') }}" alt="No image available" class="img-fluid"> --}}
+                                <img src="{{ asset('img/shirt.png') }}" alt="{{ $product->name }}" class="img-fluid">
+                            @endif
                         </div>
-                        @endforeach
-                        @else --}}
-                        <div class="item">
-                            {{-- <img src="{{ asset('images/no-image.png') }}" alt="No image available"> --}}
-                            {{-- <img src="{{ asset(" img/shirt.png") }}" alt="{{ $product->name }}" class="img-fluid">
-                            --}}
-                            {{-- <img src="{{asset('img/').{{$product->image_path}}}}" alt="Image not available"> --}}
-                            {{-- <img src="{{ asset('img/' . $product->image_path) }}" alt="{{ $product->name }}"> --}}
-                        </div>
-                        {{-- @endif --}}
+                        {{-- @endforelse --}}
                     </div>
 
 
@@ -69,14 +64,21 @@
 
 
                     <div data-slider-id="1" class="owl-thumbs">
+                        {{-- DYNAMIC THUMBNAILS - UNCOMMENT WHEN YOU HAVE MULTIPLE PRODUCT IMAGES --}}
                         {{-- @foreach($product->images as $image)
                         <button class="owl-thumb-item">
                             <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $product->name }}">
                         </button>
                         @endforeach --}}
-                        {{-- <img src="{{ asset(" img/hoodie-woman-2.png") }}" alt="{{ $product->name }}"
-                            class="img-fluid"> --}}
-                        <img src="{{ asset('img/' . $product->image_path) }}" alt="{{ $product->name }}">
+                        
+                        {{-- SINGLE PRODUCT THUMBNAIL - CURRENTLY USING PRODUCT'S IMAGE_PATH --}}
+                        @if($product->image_path)
+                            <img src="{{ asset('img/' . $product->image_path) }}" alt="{{ $product->name }}" class="img-fluid">
+                        @else
+                            {{-- FALLBACK THUMBNAIL - UNCOMMENT AND REPLACE WITH YOUR DEFAULT IMAGE --}}
+                            {{-- <img src="{{ asset('img/no-image.png') }}" alt="No image available" class="img-fluid"> --}}
+                            <img src="{{ asset('img/shirt.png') }}" alt="{{ $product->name }}" class="img-fluid">
+                        @endif
                     </div>
                 </div>
 
@@ -173,12 +175,31 @@
                         <tbody>
                             <tr>
                                 <th>Brand:</th>
-                                <td>{{ optional($product->brand)->brand_name }}</td>
+                                <td>{{ optional($product->brand)->brand_name ?? 'Not specified' }}</td>
                             </tr>
                             <tr>
                                 <th>Category:</th>
-                                <td>{{ $product->category }}</td>
+                                <td>{{ optional($product->category)->category_name ?? $product->category ?? 'Not specified' }}</td>
                             </tr>
+                            {{-- DYNAMIC PRODUCT ATTRIBUTES - UNCOMMENT AND CUSTOMIZE AS NEEDED --}}
+                            {{-- <tr>
+                                <th>Style:</th>
+                                <td>{{ $product->style ?? 'Not specified' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Material:</th>
+                                <td>{{ $product->material ?? 'Not specified' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Color:</th>
+                                <td>{{ $product->color ?? 'Not specified' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Weight:</th>
+                                <td>{{ $product->weight ?? 'Not specified' }}</td>
+                            </tr> --}}
+                            
+                            {{-- STATIC FALLBACK VALUES - COMMENT OUT WHEN YOU HAVE DYNAMIC DATA --}}
                             <tr>
                                 <th>Style:</th>
                                 <td>{{ $product->Style ?? "Casual" }}</td>

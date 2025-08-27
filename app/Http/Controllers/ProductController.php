@@ -155,8 +155,13 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        // Load the product with all necessary relationships
+        $product->load(['category', 'brand', 'sizes']);
+        
+        // Get related products from the same category
         $related_products = Product::where('category_id', optional($product->category)->id)
             ->where('id', '!=', $product->id)
+            ->with(['category', 'brand']) // Eager load relationships for related products
             ->limit(3)
             ->get();
 

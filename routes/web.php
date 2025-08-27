@@ -10,10 +10,12 @@ use App\Http\Controllers\Auth\ReisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\UpdateUser;
 use App\Http\Controllers\OrderController;
+use Illuminate\Support\Facades\Session;
 
 Route::get('/welcome', function () {
     return view('dashboard.welcome');
 });
+
 
 
 //fallback route if non of the route exists
@@ -148,19 +150,12 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/product/{product}', [ProductController::class, 'show'])->name('products.show');
+// Route::get('/product/{product}', [ProductController::class, 'show'])->name('products.show');
 
-
-
-
-
-
-
+// Cart routes - accessible to both guests and authenticated users
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::post('/cart/{product}', [CartController::class, 'store'])->whereNumber('product')->name('cart.store');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart');
-
     Route::post('/cart/manage', [CartController::class, 'manageCart'])->name('cart.manage');
-
-    Route::post('/cart/{product}', [CartController::class, 'store'])->whereNumber('product')->name('cart.store');
 });

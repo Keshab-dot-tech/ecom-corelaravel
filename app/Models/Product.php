@@ -6,8 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-     protected $fillable = ['name', 'price', 'category_id', 'brand_id'];
-
+     protected $fillable = [
+         'name', 
+         'price', 
+         'category_id', 
+         'brand_id',
+         'image_path',
+         'description',
+         'short_description',
+         'is_on_sale'
+     ];
 
     public function category()
     {
@@ -24,7 +32,7 @@ class Product extends Model
     public function sizes()
     {
         // return $this->belongsToMany(Size::class);
-        return $this->belongsToMany(Size::class, 'product_size','size_id','product_id')
+        return $this->belongsToMany(Size::class, 'product_size', 'product_id', 'size_id')
                     ->withTimestamps();
     }
 

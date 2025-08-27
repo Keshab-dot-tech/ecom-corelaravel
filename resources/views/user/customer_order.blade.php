@@ -151,7 +151,8 @@
                       <h6 class="text-uppercase">Shipping address</h6>
                     </div>
                     <div class="block-body">
-                    @if ($shipping['shipping_first_name'] == null)
+                    {{-- @if ($shipping['shipping_first_name'] == null) --}}
+                      @if(!empty($address))
                         <p>{{ $address['name'] }}</p>
                         <p>{{ $address['email'] }}</p>
                         <p>{{ $address['address'] }},{{ $address['state_name'] }} -
@@ -159,8 +160,9 @@
                         </p>
                         <p>{{ $address['country_name'] }}</p>
                         <p>{{ $address['phone'] }}</p>
-
                       @endif
+
+                      {{-- @endif --}}
                       @if(!empty($shipping))
                         <p>{{ $shipping['shipping_first_name'] }} {{ $shipping['shipping_last_name'] }} </p>
                         <p>{{ $shipping['shipping_email'] }}</p>

@@ -7,76 +7,147 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
 {
     public function index_checkout1()
     {
-        $cartItems = Cart::with('product')
-            ->where('user_id', auth()->id())
-            ->get();
+        if (Auth::check()) {
+            // User is logged in - get cart from database
+            $cartItems = Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->get();
+        } else {
+            // User is guest - get cart from session
+            $sessionCart = Session::get('cart', []);
+            $cartItems = collect($sessionCart)->map(function ($item) {
+                // Create a mock object structure for session cart items
+                $mockItem = new \stdClass();
+                $mockItem->id = $item['product_id']; // Use product_id as temporary id
+                $mockItem->quantity = $item['quantity'];
+                $mockItem->price = $item['price'];
+                
+                // Create mock product object
+                $mockProduct = new \stdClass();
+                $mockProduct->id = $item['product_id'];
+                $mockProduct->name = $item['name'];
+                $mockProduct->image_path = $item['image_path'] ?? 'default.jpg';
+                
+                $mockItem->product = $mockProduct;
+                return $mockItem;
+            });
+        }
 
         return view('checkout.checkout1', compact('cartItems'));
     }
 
     public function index_checkout2()
     {
-        $cartItems = Cart::with('product')
-            ->where('user_id', auth()->id())
-            ->get();
+        if (Auth::check()) {
+            // User is logged in - get cart from database
+            $cartItems = Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->get();
+        } else {
+            // User is guest - get cart from session
+            $sessionCart = Session::get('cart', []);
+            $cartItems = collect($sessionCart)->map(function ($item) {
+                // Create a mock object structure for session cart items
+                $mockItem = new \stdClass();
+                $mockItem->id = $item['product_id']; // Use product_id as temporary id
+                $mockItem->quantity = $item['quantity'];
+                $mockItem->price = $item['price'];
+                
+                // Create mock product object
+                $mockProduct = new \stdClass();
+                $mockProduct->id = $item['product_id'];
+                $mockProduct->name = $item['name'];
+                $mockProduct->image_path = $item['image_path'] ?? 'default.jpg';
+                
+                $mockItem->product = $mockProduct;
+                return $mockItem;
+            });
+        }
 
         return view('checkout.checkout2', compact('cartItems'));
     }
 
     public function index_checkout3()
     {
-        $cartItems = Cart::with('product')
-            ->where('user_id', auth()->id())
-            ->get();
+        if (Auth::check()) {
+            // User is logged in - get cart from database
+            $cartItems = Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->get();
+        } else {
+            // User is guest - get cart from session
+            $sessionCart = Session::get('cart', []);
+            $cartItems = collect($sessionCart)->map(function ($item) {
+                // Create a mock object structure for session cart items
+                $mockItem = new \stdClass();
+                $mockItem->id = $item['product_id']; // Use product_id as temporary id
+                $mockItem->quantity = $item['quantity'];
+                $mockItem->price = $item['price'];
+                
+                // Create mock product object
+                $mockProduct = new \stdClass();
+                $mockProduct->id = $item['product_id'];
+                $mockProduct->name = $item['name'];
+                $mockProduct->image_path = $item['image_path'] ?? 'default.jpg';
+                
+                $mockItem->product = $mockProduct;
+                return $mockItem;
+            });
+        }
 
         return view('checkout.checkout3', compact('cartItems'));
     }
 
     public function index_checkout4()
     {
-        $cartItems = Cart::with('product')
-            ->where('user_id', auth()->id())
-            ->get();
+        if (Auth::check()) {
+            // User is logged in - get cart from database
+            $cartItems = Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->get();
+        } else {
+            // User is guest - get cart from session
+            $sessionCart = Session::get('cart', []);
+            $cartItems = collect($sessionCart)->map(function ($item) {
+                // Create a mock object structure for session cart items
+                $mockItem = new \stdClass();
+                $mockItem->id = $item['product_id']; // Use product_id as temporary id
+                $mockItem->quantity = $item['quantity'];
+                $mockItem->price = $item['price'];
+                
+                // Create mock product object
+                $mockProduct = new \stdClass();
+                $mockProduct->id = $item['product_id'];
+                $mockProduct->name = $item['name'];
+                $mockProduct->image_path = $item['image_path'] ?? 'default.jpg';
+                
+                $mockItem->product = $mockProduct;
+                return $mockItem;
+            });
+        }
 
         return view('checkout.checkout4', compact('cartItems'));
     }
 
-    //  $yourModel = new YourModelName();
-    //         $yourModel->field1 = $validatedData['field1'];
-    //         $yourModel->field2 = $validatedData['field2'];
-    //         // ... assign other fields
-    //         $yourModel->save();
-
-
-    // public function store(Request $request){
-    //     $request->validate([
-    //         'name' => ['required' , 'string' ,'max:255'],
-    //         'email' => ['required' , 'string' , 'max:255','unique:users'],
-    //         'street' => ['string'],
-    //         'zip_code' => ['min:4'],
-    //         'state_name' => ['string'],
-    //         'country_name' => ['string'],
-    //         'phone' => ['min:10'],
-    //         'company' => ['company']
-
-    //     ]);
-
-    //     $userModel = new User();
-    //     // $userModel->name
-
-    // }
-
-
     public function destroy($id)
     {
-        Cart::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->delete();
+        if (Auth::check()) {
+            // User is logged in - delete from database
+            Cart::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->delete();
+        } else {
+            // User is guest - delete from session
+            $cart = Session::get('cart', []);
+            unset($cart[$id]);
+            Session::put('cart', $cart);
+        }
 
         return redirect()->back()->with('success', 'Item Removed!');
     }
@@ -158,27 +229,39 @@ class CheckoutController extends Controller
         return redirect()->route('checkout_delivery');
     }
 
-
     public function placeOrder(Request $request)
     {
         $address  = Session::get('checkout.address');
         $shipping = Session::get('checkout.shipping');
 
+        // Calculate total price from cart
+        $totalPrice = 0;
+        if (Auth::check()) {
+            $cartItems = Cart::where('user_id', Auth::id())->get();
+            $totalPrice = $cartItems->sum(function($item) {
+                return $item->price * $item->quantity;
+            });
+        } else {
+            $sessionCart = Session::get('cart', []);
+            foreach ($sessionCart as $item) {
+                $totalPrice += $item['price'] * $item['quantity'];
+            }
+        }
+
         $order = new Order();
-        $order->user_id = auth()->id();
+        if (Auth::check()) {
+            $order->user_id = Auth::id();
+        }
         $order->invoice_address = json_encode($address);
         $order->shipping_address = json_encode($shipping);
         $order->status = 'pending';
-        $order->price = 100;
+        $order->price = $totalPrice;
         $order->save();
 
-        // clear session after saving
-        // Session::forget('checkout');
+        // Clear session after saving
+        Session::forget('checkout');
 
         return redirect()->route('checkout_order_confirm')
             ->with('success', 'Order placed successfully!');
     }
-
-
-    
 }
