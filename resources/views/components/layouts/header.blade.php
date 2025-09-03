@@ -226,7 +226,7 @@
               aria-expanded="false" class="dropdown-toggle"><i class="icon-profile"></i></a>
             <ul aria-labelledby="userdetails" class="dropdown-menu">
               <li class="dropdown-item">
-                <a href="#">Orders</a>
+                <a href="{{route("all_orders")}}">Orders</a>
               </li>
               <li class="dropdown-item">
                 <a href="{{route("user_address")}}">Addresses</a>
