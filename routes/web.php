@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckingoutController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProductController;
 use GuzzleHttp\Promise\Create;
@@ -94,23 +95,28 @@ Route::middleware('auth')->group(function () {
     Route::get('user/logout', [LoginController::class, 'destroy'])->name('logout');
 
 
-    //protected routes for checkouts
-    Route::get('checkout/address', [CheckoutController::class, 'index_checkout1'])->name('checkout_address');
+     
+    // Route::get('checkout/address', [CheckoutController::class, 'index_checkout1'])->name('checkout_address');
 
-    Route::get('checkout/delivery', [CheckoutController::class, 'index_checkout2'])->name('checkout_delivery');
+    // Route::get('checkout/delivery', [CheckoutController::class, 'index_checkout2'])->name('checkout_delivery');
 
-    Route::get('checkout/payment', [CheckoutController::class, 'index_checkout3'])->name("checkout_payment");
+    // Route::get('checkout/payment', [CheckoutController::class, 'index_checkout3'])->name("checkout_payment");
 
-    Route::get('checkout/order-review', [CheckoutController::class, 'index_checkout4'])->name("checkout_order_review");
+    // Route::get('checkout/order-review', [CheckoutController::class, 'index_checkout4'])->name("checkout_order_review");
 
-    Route::get('checkout/order-confirmed', function () {
-        return view("checkout.checkout5");
-    })->name("checkout_order_confirm");
+    // Route::get('checkout/order-confirmed', function () {
+    //     return view("checkout.checkout5");
+    // })->name("checkout_order_confirm");
 
-    // Route::post('checkout/order-review' , [CheckoutController::class,'destroy'])->name('checkout_item_destroy');
+    
 
-    Route::delete('checkout/order-review/{id}', [CheckoutController::class, 'destroy'])
-        ->name('checkout_item_destroy');
+    // Route::delete('checkout/order-review/{id}', [CheckoutController::class, 'destroy'])
+    //     ->name('checkout_item_destroy');
+
+    // Route::post('/save-address', [CheckoutController::class, 'save_address'])->name('save_address');
+
+    // Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])
+    //     ->name('checkout_place_order');
 
 
     Route::get('customer-order', [OrderController::class, 'order_detail'])->name('order_detail');
@@ -118,14 +124,10 @@ Route::middleware('auth')->group(function () {
     Route::get('customer/all-orders' , [OrderController::class , 'all_orders']) ->name('all_orders');
 
 
-    Route::post('/save-address', [CheckoutController::class, 'save_address'])->name('save_address');
-
-    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])
-        ->name('checkout_place_order');
+    
 
 
-    // Route::get('/checkout/delivery', [CheckoutController::class, 'delivery'])
-    //     ->name('checkout_delivery');
+     
 });
 
 
@@ -159,3 +161,45 @@ Route::post('/cart/{product}', [CartController::class, 'store'])->whereNumber('p
 Route::middleware(['auth'])->group(function () {
     Route::post('/cart/manage', [CartController::class, 'manageCart'])->name('cart.manage');
 });
+
+
+
+
+
+ 
+Route::prefix('checkout')->group(function () {
+     
+    Route::get('/address-invoice', [CheckingoutController::class, 'index_checkout1'])->name('checkout_address');
+    Route::post('/address/save', [CheckingoutController::class, 'save_address'])->name('save_address');
+
+     
+    Route::get('/shipping-address', [CheckingoutController::class, 'index_checkout2'])->name('checkout_shipping_address');
+    Route::post('/shipping-address/save', [CheckingoutController::class, 'save_shipping_address'])->name('save_shipping_address');
+
+     
+    Route::get('/delivery', [CheckingoutController::class, 'index_checkout_delivery'])->name('checkout_delivery');
+    Route::post('/delivery/save', [CheckingoutController::class, 'save_delivery_method'])->name('save_delivery_method');
+
+     
+    Route::get('/payment', [CheckingoutController::class, 'index_checkout_payment'])->name('checkout_payment');
+    Route::post('/payment/save', [CheckingoutController::class, 'save_payment_method'])->name('save_payment_method');
+
+     
+    Route::get('/review', [CheckingoutController::class, 'index_checkout3'])->name('checkout_order_review');
+    Route::delete('/review/item/{id}', [CheckingoutController::class, 'destroy'])->name('checkout_item_destroy');
+
+     
+    Route::post('/place-order', [CheckingoutController::class, 'placeOrder'])->name('checkout_place_order');
+
+    
+    Route::get('/confirmation', [CheckingoutController::class, 'orderConfirmation'])->name('checkout_order_confirm');
+});
+ 
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+ 
