@@ -14,21 +14,21 @@ class CheckoutController extends Controller
     public function index_checkout1()
     {
         if (Auth::check()) {
-            // User is logged in - get cart from database
+             
             $cartItems = Cart::with('product')
                 ->where('user_id', Auth::id())
                 ->get();
         } else {
-            // User is guest - get cart from session
+             
             $sessionCart = Session::get('cart', []);
             $cartItems = collect($sessionCart)->map(function ($item) {
-                // Create a mock object structure for session cart items
+                 
                 $mockItem = new \stdClass();
-                $mockItem->id = $item['product_id']; // Use product_id as temporary id
+                $mockItem->id = $item['product_id'];  
                 $mockItem->quantity = $item['quantity'];
                 $mockItem->price = $item['price'];
                 
-                // Create mock product object
+                 
                 $mockProduct = new \stdClass();
                 $mockProduct->id = $item['product_id'];
                 $mockProduct->name = $item['name'];
@@ -154,45 +154,6 @@ class CheckoutController extends Controller
 
     public function save_address(Request $request)
     {
-        // session([
-        //     'invoice' => [
-        //         'name' => $request->name,
-        //         'email' => $request->email,
-        //         'street' => $request->address,
-        //         'city' => $request->city,
-        //         'zip_code' => $request->zip_code,
-        //         'state' => $request->state_name,
-        //         'country' => $request->country_name,
-        //         'phone' => $request->phone,
-        //         'company' => $request->company,
-        //     ],
-        //     'shipping' => [
-        //         'first_name' => $request->shipping_first_name,
-        //         'last_name' => $request->shipping_last_name,
-        //         'email' => $request->shipping_email,
-        //         'street' => $request->shipping_address,
-        //         'city' => $request->shipping_city,
-        //         'zip_code' => $request->shipping_zip,
-        //         'state' => $request->shipping_state,
-        //         'country' => $request->shipping_country,
-        //         'phone' => $request->shipping_phone_number,
-        //         'company' => $request->shipping_company,
-        //     ]
-        // ]);
-
-        // // Create order directly from request (store JSON properly)
-        // $ord = Order::create([
-        //     'user_id'         => auth()->id(),
-        //     'shipping_address' => json_encode(session('shipping')),
-        //     'invoice_address' => json_encode(session('invoice')),
-        //     'price'           => 12121,
-        // ]);
-
-        // return redirect()->route('order_detail');
-
-
-
-
         // Validate incoming request
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
